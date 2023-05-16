@@ -1,0 +1,5 @@
+机房和位置,主系统,子系统,业务名称,开通方式,集群,操作系统,CPU(核),内存(G),系统存储(G),数据存储(G),虚拟机名称,网络域,内网IP,内网IP(多网卡),带宽(Mbps),分配时间,到期时间,当前状态,备注
+水土苏研,网络信息安全平台SDC平台,网络信息安全平台SDC平台,网络信息安全平台SDC平台,线下开通,openstack,AnolisOS-8.2-QU2-x86_64,8,32,30,200,it-st-openstack-wlxxaqhxptsdc-zdy01-183.21,vlan 3868,10.191.183.2,vlan 1182:10.191.2.3;vlan 1723:10.191.3.2,,2023/2/2,,在线,
+水土苏研,网络信息安全平台SDC平台,网络信息安全平台SDC平台,网络信息安全平台SDC平台,线下开通,openstack,AnolisOS-8.2-QU2-x86_64,8,32,30,200,it-st-openstack-wlxxaqhxptsdc-zdy02-183.22,vlan 3868,10.191.183.22,,,2023/2/2,,在线,
+水土苏研,网络信息安全平台SDC平台,网络信息安全平台SDC平台,网络信息安全平台SDC平台,线下开通,openstack,AnolisOS-8.2-QU2-x86_64,16,32,30,200,it-st-openstack-wlxxaqhxptsdc-zdy03-183.23,vlan 3868,10.191.183.123,,,2023/2/2,,在线,
+水土苏研,网络信息安全平台SDC平台,网络信息安全平台SDC平台,网络信息安全平台SDC平台,线下开通,openstack,AnolisOS-8.2-QU2-x86_64,16,32,30,50,it-st-openstack-wlxxaqhxptsdc-zdy04-183.24,vlan 3868,10.191.183.246,,,2023/2/2,,在线,
