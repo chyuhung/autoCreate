@@ -30,7 +30,7 @@ func init() {
 }
 
 // Get 返回 EnvFile 实例的指针
-func (e EnvFile) Get() *EnvFile {
+func GetEnv() *EnvFile {
 	return env
 }
 

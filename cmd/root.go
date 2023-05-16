@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	log "github.com/sirupsen/logrus"
@@ -21,15 +20,9 @@ var rootCmd = &cobra.Command{
 func init() {
 	log.SetOutput(os.Stdout)
 	log.SetLevel(log.InfoLevel)
-	log.SetFormatter(&log.TextFormatter{
-		FullTimestamp: true,
-	})
 }
 
 // Execute 函数执行主命令
 func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+	rootCmd.Execute()
 }
