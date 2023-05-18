@@ -1,1 +1,2 @@
-None
+this is a volume type
+this is a volume type too

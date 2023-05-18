@@ -1,18 +1,13 @@
 package openstack
 
 import (
-	"os"
-
 	"github.com/gophercloud/gophercloud"
 	"github.com/gophercloud/gophercloud/openstack"
 	log "github.com/sirupsen/logrus"
 )
 
-// 默认区域名称
-const DefaultRegion = "RegionOne"
-
-// OpenStack 结构体包含各个服务的客户端
-type OpenStack struct {
+// openStack 结构体包含各个服务的客户端
+type openStack struct {
 	Nova     *gophercloud.ServiceClient
 	Neutron  *gophercloud.ServiceClient
 	Glance   *gophercloud.ServiceClient
@@ -22,55 +17,42 @@ type OpenStack struct {
 }
 
 // NewOpenStack 函数初始化 OpenStack 结构体
-func NewOpenStack() (*OpenStack, error) {
-	// 从环境变量中获取认证选项
-	authOpts, err := openstack.AuthOptionsFromEnv()
+func NewOpenStack(conf OpenStackConfig) (*openStack, error) {
+	provider, err := openstack.NewClient(conf.AuthURL)
 	if err != nil {
 		return nil, err
 	}
-	// 允许重新认证
-	authOpts.AllowReauth = true
-
-	// 认证，获取 provider
-	provider, err := openstack.AuthenticatedClient(authOpts)
-	if err != nil {
+	if err = openstack.Authenticate(provider, conf.AuthOpts()); err != nil {
 		return nil, err
 	}
-
-	// 获取区域名称
-	region := os.Getenv("OS_REGION_NAME")
-	if region == "" {
-		region = DefaultRegion
-	}
-
 	// 初始化 OpenStack 结构体
-	os := OpenStack{}
-	os.Nova, err = getComputeClient(provider, region)
+	os := openStack{}
+	os.Nova, err = getComputeClient(provider, conf.Region)
 	if err != nil {
 		return nil, err
 	}
-	os.Neutron, err = getNetworkClient(provider, region)
+	os.Neutron, err = getNetworkClient(provider, conf.Region)
 	if err != nil {
 		return nil, err
 	}
-	os.Glance, err = getImageClient(provider, region)
+	os.Glance, err = getImageClient(provider, conf.Region)
 	if err != nil {
 		return nil, err
 	}
-	os.CinderV2, err = getBlockStorageV2Client(provider, region)
+	os.CinderV2, err = getBlockStorageV2Client(provider, conf.Region)
 	if err != nil {
 		return nil, err
 	}
-	os.CinderV3, err = getBlockStorageV3Client(provider, region)
+	os.CinderV3, err = getBlockStorageV3Client(provider, conf.Region)
 	if err != nil {
 		return nil, err
 	}
-	os.Keystone, err = getIdentityClient(provider, region)
+	os.Keystone, err = getIdentityClient(provider, conf.Region)
 	if err != nil {
 		return nil, err
 	}
 
-	log.Debug("OpenStack client initialized")
+	log.Info("OpenStack client initialized")
 	return &os, nil
 }
 

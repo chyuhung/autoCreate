@@ -6,7 +6,7 @@ import (
 )
 
 // GetVM 函数返回指定 ID 的虚拟机
-func (os *OpenStack) GetVM(id string) (*servers.Server, error) {
+func (os *openStack) GetVM(id string) (*servers.Server, error) {
 	// 从 Nova 服务中获取指定 ID 的虚拟机
 	vm, err := servers.Get(os.Nova, id).Extract()
 	if err != nil {
@@ -18,7 +18,7 @@ func (os *OpenStack) GetVM(id string) (*servers.Server, error) {
 }
 
 // GetFlavors 函数返回所有属性为 public 的 Flavor
-func (os *OpenStack) GetFlavors() ([]flavors.Flavor, error) {
+func (os *openStack) GetFlavors() ([]flavors.Flavor, error) {
 	listOpts := flavors.ListOpts{
 		AccessType: flavors.PublicAccess,
 	}

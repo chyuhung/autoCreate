@@ -78,17 +78,17 @@ func (c *CinderV3Client) List(opts interface{}) ([]interface{}, error) {
 }
 
 // IsCinderV2 返回当前OpenStack环境的Cinder版本是否为v2
-func (os *OpenStack) IsCinderV2() bool {
+func (os *openStack) IsCinderV2() bool {
 	return os.CinderV2 != nil
 }
 
 // IsCinderV3 返回当前OpenStack环境的Cinder版本是否为v3
-func (os *OpenStack) IsCinderV3() bool {
+func (os *openStack) IsCinderV3() bool {
 	return os.CinderV3 != nil
 }
 
 // GetVolumeTypes 函数返回指定项目的所有卷类型
-func (os *OpenStack) GetVolumeTypes(projectID string) ([]interface{}, error) {
+func (os *openStack) GetVolumeTypes(projectID string) ([]interface{}, error) {
 	// 配置 ListOpts
 	listOptsV2 := volumes.ListOpts{
 		AllTenants: true,

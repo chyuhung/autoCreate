@@ -5,7 +5,7 @@ import (
 )
 
 // GetIMG 函数返回指定项目的所有镜像
-func (os *OpenStack) GetIMG(projectID string) ([]images.Image, error) {
+func (os *openStack) GetIMG(projectID string) ([]images.Image, error) {
 	// 配置 ListOpts
 	listOpts := images.ListOpts{
 		Owner: projectID,
