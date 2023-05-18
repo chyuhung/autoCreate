@@ -20,5 +20,8 @@ func (conf OpenStackConfig) AuthOpts() gophercloud.AuthOptions {
 		Password:         conf.Password,
 		DomainName:       conf.DomainName,
 		AllowReauth:      true,
+		Scope: &gophercloud.AuthScope{
+			ProjectName: conf.ProjectName,
+			DomainName:  conf.DomainName},
 	}
 }
