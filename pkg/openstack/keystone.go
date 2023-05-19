@@ -6,6 +6,7 @@ import "github.com/gophercloud/gophercloud/openstack/identity/v3/projects"
 func (os *openStack) GetProjects() ([]projects.Project, error) {
 	// 声明一个布尔类型的变量
 	var enabled = true
+	//var disabled = false
 
 	// 配置 ListOpts
 	listOpts := projects.ListOpts{

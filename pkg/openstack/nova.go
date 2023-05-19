@@ -1,9 +1,12 @@
 package openstack
 
 import (
+	"github.com/gophercloud/gophercloud/openstack/compute/v2/extensions/hypervisors"
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/flavors"
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/servers"
 )
+
+const noLimit int = -1
 
 // GetVM 函数返回指定 ID 的虚拟机
 func (os *openStack) GetVM(id string) (*servers.Server, error) {
@@ -33,4 +36,29 @@ func (os *openStack) GetFlavors() ([]flavors.Flavor, error) {
 		return nil, err
 	}
 	return allFlavors, nil
+}
+
+func (os *openStack) GetHypervisors() ([]hypervisors.Hypervisor, error) {
+	listsOpts := hypervisors.ListOpts{}
+	allPages, err := hypervisors.List(os.Nova, listsOpts).AllPages()
+	if err != nil {
+		return nil, err
+	}
+	allHypervisors, err := hypervisors.ExtractHypervisors(allPages)
+	if err != nil {
+		return nil, err
+	}
+	return allHypervisors, nil
+}
+
+func (os *openStack) GetHypervisorNames() ([]string, error) {
+	hypervisors, err := os.GetHypervisors()
+	if err != nil {
+		return nil, err
+	}
+	var hypervisorNames []string
+	for _, h := range hypervisors {
+		hypervisorNames = append(hypervisorNames, h.HypervisorHostname)
+	}
+	return hypervisorNames, nil
 }

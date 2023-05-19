@@ -1,2 +1,2 @@
-this is a volume type
-this is a volume type too
+test-is-public
+__DEFAULT__

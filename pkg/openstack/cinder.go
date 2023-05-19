@@ -32,7 +32,7 @@ func (c *CinderV2Client) List(opts interface{}) ([]interface{}, error) {
 		return nil, err
 	}
 
-	allVolumeTypes, err := volumetypes.ExtractVolumeTypes(allPages)
+	allVolumeTypes, err := volumes.ExtractVolumes(allPages)
 	if err != nil {
 		return nil, err
 	}
@@ -98,29 +98,38 @@ func (os *openStack) GetVolumeTypes(projectID string) ([]interface{}, error) {
 
 	// 根据 Cinder 版本选择客户端
 	var client VolumeClient
-	if os.IsCinderV2() {
-		client = &CinderV2Client{Client: os.CinderV2}
-	} else if os.IsCinderV3() {
-		client = &CinderV3Client{Client: os.CinderV3}
+	if os.IsCinderV3() {
+		client = &CinderV3Client{Client: os.CinderV2}
+	} else if os.IsCinderV2() {
+		client = &CinderV2Client{Client: os.CinderV3}
 	} else {
 		return nil, fmt.Errorf("no valid cinder client")
 	}
 
 	// 调用客户端的 List 方法获取所有卷类型
-	allVolumeTypes, err := client.List(listOptsV2)
+	allVolumeTypes, err := client.List(listOptsV3)
 	if err != nil {
-		allVolumeTypes, err = client.List(listOptsV3)
+		allVolumeTypes, err = client.List(listOptsV2)
 		if err != nil {
 			return nil, err
 		}
 	}
-	// 过滤指定项目的卷类型
-	var volumeTypes []interface{}
+
+	return allVolumeTypes, nil
+}
+
+func (os *openStack) GetVolumeTypeNames() ([]string, error) {
+	allVolumeTypes, err := os.GetVolumeTypes("")
+	if err != nil {
+		return nil, err
+	}
+	var volumeTypeNames []string
 	for _, vt := range allVolumeTypes {
-		if vt, ok := vt.(volumetypes.VolumeType); ok {
-			volumeTypes = append(volumeTypes, vt)
+		if vtn, ok := vt.(volumetypes.VolumeType); ok {
+			volumeTypeNames = append(volumeTypeNames, vtn.Name)
+		} else if vtn, ok := vt.(volumes.Volume); ok {
+			volumeTypeNames = append(volumeTypeNames, vtn.Name)
 		}
 	}
-
-	return volumeTypes, nil
+	return volumeTypeNames, nil
 }

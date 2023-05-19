@@ -57,5 +57,19 @@ func ReadFromEnvFile(filename string) ([]string, error) {
 
 // 写入数据到文件
 func WriteToEnvFile(array []string, filename string) error {
-	return os.WriteFile(filename, []byte(strings.Join(array, "\n")), 0644)
+	data := strings.Join(array, "\n") + "\n"
+	return os.WriteFile(filename, []byte(data), 0644)
+}
+
+// 去重 string 数组
+func UniqueStrings(s []string) []string {
+	m := make(map[string]bool)
+	for _, v := range s {
+		m[v] = true
+	}
+	var result []string
+	for key := range m {
+		result = append(result, key)
+	}
+	return result
 }

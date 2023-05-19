@@ -1,2 +1,1 @@
-this is a hypervisor
-this is a hypervisor too
+compute01

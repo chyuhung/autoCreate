@@ -4,8 +4,8 @@ import (
 	"github.com/gophercloud/gophercloud/openstack/imageservice/v2/images"
 )
 
-// GetIMG 函数返回指定项目的所有镜像
-func (os *openStack) GetIMG(projectID string) ([]images.Image, error) {
+// GetImages 函数返回指定项目的所有镜像
+func (os *openStack) GetImages(projectID string) ([]images.Image, error) {
 	// 配置 ListOpts
 	listOpts := images.ListOpts{
 		Owner: projectID,
