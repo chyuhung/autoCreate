@@ -9,16 +9,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	volumeTypeFile string
-	hypervisorFile string
-	imageFile      string
-)
+var ef envFile
 
 func init() {
-	pullCmd.Flags().StringVar(&hypervisorFile, "hypervisor", "", "pull the hypervisor name to the specified file")
-	pullCmd.Flags().StringVar(&imageFile, "image", "", "pull the image name to the specified file")
-	pullCmd.Flags().StringVar(&volumeTypeFile, "volumetype", "", "pull the volume type name to the specified file")
+	pullCmd.Flags().StringVar(&ef.hypervisorFile, "hypervisor", "", "pull the hypervisor name to the specified file")
+	pullCmd.Flags().StringVar(&ef.imageFile, "image", "", "pull the image name to the specified file")
+	pullCmd.Flags().StringVar(&ef.volumeTypeFile, "volumetype", "", "pull the volume type name to the specified file")
 	rootCmd.AddCommand(pullCmd)
 }
 
@@ -26,13 +22,13 @@ var pullCmd = &cobra.Command{
 	Use:   "pull",
 	Short: "Pull the specified data to the specified file",
 	Run: func(cmd *cobra.Command, args []string) {
-		if hypervisorFile == "" || imageFile == "" || volumeTypeFile == "" {
-			log.Fatalln("no valid flag")
+		if ef.hypervisorFile == "" || ef.imageFile == "" || ef.volumeTypeFile == "" {
+			log.Fatalln("no valid flags")
 		}
 
-		log.Info("hypervisorFile:", hypervisorFile)
-		log.Info("volumeTypeFile:", volumeTypeFile)
-		log.Info("imageFile:", imageFile)
+		log.Info("hypervisorFile:", ef.hypervisorFile)
+		log.Info("volumeTypeFile:", ef.volumeTypeFile)
+		log.Info("imageFile:", ef.imageFile)
 
 		os, err := openstack.NewOpenStack(conf)
 		if err != nil {
@@ -69,8 +65,8 @@ var pullCmd = &cobra.Command{
 		}
 
 		// 将所有数据写入文件
-		tools.WriteToEnvFile(tools.UniqueStrings(imageNames), imageFile)
-		tools.WriteToEnvFile(tools.UniqueStrings(hypervisorNames), hypervisorFile)
-		tools.WriteToEnvFile(tools.UniqueStrings(volumeTypeNames), volumeTypeFile)
+		tools.WriteToEnvFile(tools.UniqueStrings(imageNames), ef.imageFile)
+		tools.WriteToEnvFile(tools.UniqueStrings(hypervisorNames), ef.hypervisorFile)
+		tools.WriteToEnvFile(tools.UniqueStrings(volumeTypeNames), ef.volumeTypeFile)
 	},
 }
