@@ -19,6 +19,9 @@ var rootCmd = &cobra.Command{
 	Use:   "autoCreate",
 	Short: "A simplified command-line utility for quickly and automatically generating OpenStack instances.",
 	RunE: func(cmd *cobra.Command, args []string) error {
+		if len(args) == 0 {
+			log.Fatalln("no valid flag")
+		}
 		return nil
 	},
 }

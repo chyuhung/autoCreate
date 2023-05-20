@@ -6,10 +6,8 @@ import (
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/servers"
 )
 
-const noLimit int = -1
-
-// GetVM 函数返回指定 ID 的虚拟机
-func (os *openStack) GetVM(id string) (*servers.Server, error) {
+// GetInstance 函数返回指定 ID 的虚拟机
+func (os *openStack) GetInstance(id string) (*servers.Server, error) {
 	// 从 Nova 服务中获取指定 ID 的虚拟机
 	vm, err := servers.Get(os.Nova, id).Extract()
 	if err != nil {

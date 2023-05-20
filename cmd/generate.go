@@ -13,10 +13,10 @@ func init() {
 
 var generateCmd = &cobra.Command{
 	Use:   "generate",
-	Short: "Generate the instance information to the specified file",
+	Short: "Generate the instance content to the specified file",
 	Run: func(cmd *cobra.Command, args []string) {
 		if ef.instanceFile == "" {
-			log.Fatalln("no valid flags")
+			log.Fatalln("no valid flag")
 		}
-		log.Info("file:", ef.instanceFile)
+		log.Info("instanceFile:", ef.instanceFile)
 	}}

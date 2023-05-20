@@ -14,16 +14,16 @@ var ef envFile
 func init() {
 	pullCmd.Flags().StringVar(&ef.hypervisorFile, "hypervisor", "", "pull the hypervisor name to the specified file")
 	pullCmd.Flags().StringVar(&ef.imageFile, "image", "", "pull the image name to the specified file")
-	pullCmd.Flags().StringVar(&ef.volumeTypeFile, "volumetype", "", "pull the volume type name to the specified file")
+	pullCmd.Flags().StringVar(&ef.volumeTypeFile, "volume-type", "", "pull the volume type name to the specified file")
 	rootCmd.AddCommand(pullCmd)
 }
 
 var pullCmd = &cobra.Command{
 	Use:   "pull",
-	Short: "Pull the specified data to the specified file",
+	Short: "Pull the specified content to the specified file",
 	Run: func(cmd *cobra.Command, args []string) {
 		if ef.hypervisorFile == "" || ef.imageFile == "" || ef.volumeTypeFile == "" {
-			log.Fatalln("no valid flags")
+			log.Fatalln("no valid flag")
 		}
 
 		log.Info("hypervisorFile:", ef.hypervisorFile)
