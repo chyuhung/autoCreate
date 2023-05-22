@@ -45,6 +45,10 @@ func init() {
 	}
 	conf.Region = region
 	conf.AuthURL = os.Getenv("OS_AUTH_URL")
+	if conf.Username == "" || conf.Password == "" || conf.ProjectName == "" || conf.DomainName == "" || conf.AuthURL == "" {
+		log.Errorln("You must provide the username, password, project name, user domain name, and auth URL by source environment variables")
+		os.Exit(1)
+	}
 }
 
 func Execute() {
