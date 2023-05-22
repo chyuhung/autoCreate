@@ -133,3 +133,7 @@ func (os *openStack) GetVolumeTypeNames() ([]string, error) {
 	}
 	return volumeTypeNames, nil
 }
+
+func CreateVolume(name string, size int, volumeType string) error {
+	return nil
+}

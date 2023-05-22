@@ -36,6 +36,7 @@ func (os *openStack) GetFlavors() ([]flavors.Flavor, error) {
 	return allFlavors, nil
 }
 
+// GetHypervisors 函数返回所有 Hypervisor
 func (os *openStack) GetHypervisors() ([]hypervisors.Hypervisor, error) {
 	listsOpts := hypervisors.ListOpts{}
 	allPages, err := hypervisors.List(os.Nova, listsOpts).AllPages()
@@ -49,6 +50,7 @@ func (os *openStack) GetHypervisors() ([]hypervisors.Hypervisor, error) {
 	return allHypervisors, nil
 }
 
+// GetHypervisorNames 函数返回所有 Hypervisor names
 func (os *openStack) GetHypervisorNames() ([]string, error) {
 	hypervisors, err := os.GetHypervisors()
 	if err != nil {
@@ -59,4 +61,13 @@ func (os *openStack) GetHypervisorNames() ([]string, error) {
 		hypervisorNames = append(hypervisorNames, h.HypervisorHostname)
 	}
 	return hypervisorNames, nil
+}
+
+// CreateInstance 创建 instance
+func (os *openStack) CreateInstance(createOpts servers.CreateOptsBuilder) (*servers.Server, error) {
+	server, err := servers.Create(os.Nova, createOpts).Extract()
+	if err != nil {
+		panic(err)
+	}
+	return server, nil
 }

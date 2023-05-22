@@ -7,6 +7,8 @@ package openstack
 // 	"os"
 // 	"regexp"
 // 	"strings"
+
+// 	"github.com/gophercloud/gophercloud/openstack/compute/v2/servers"
 // )
 
 // // InstanceInfo csv文件包含的实例信息
@@ -44,6 +46,7 @@ package openstack
 
 // 	// Create an array of instances
 // 	var instances []InstanceInfo
+// 	var server []servers.Server
 
 // 	// Read the matching files
 // 	for _, file := range matchingFiles {
