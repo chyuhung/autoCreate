@@ -3,7 +3,7 @@ package openstack
 import "github.com/gophercloud/gophercloud/openstack/identity/v3/projects"
 
 // GetProjects 函数返回所有启用的项目列表
-func (os *openStack) GetProjects() ([]projects.Project, error) {
+func (os *OpenStack) GetProjects() ([]projects.Project, error) {
 	// 声明一个布尔类型的变量
 	var enabled = true
 	//var disabled = false

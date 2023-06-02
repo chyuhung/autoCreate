@@ -4,136 +4,98 @@ import (
 	"fmt"
 
 	"github.com/gophercloud/gophercloud"
-	"github.com/gophercloud/gophercloud/openstack/blockstorage/v2/volumes"
+	volumesV2 "github.com/gophercloud/gophercloud/openstack/blockstorage/v2/volumes"
+	volumesV3 "github.com/gophercloud/gophercloud/openstack/blockstorage/v3/volumes"
 	"github.com/gophercloud/gophercloud/openstack/blockstorage/v3/volumetypes"
 )
 
-// VolumeClient 接口定义了卷类型客户端的方法
-type VolumeClient interface {
-	List(opts interface{}) ([]interface{}, error)
+type CinderInterface interface {
+	Create(opts interface{}) (interface{}, error)
+	GetVolumeTypes() ([]interface{}, error)
+	GetVolumeTypeNames() ([]string, error)
 }
 
-// CinderV2Client 实现了 VolumeTypeClient 接口，用于访问 Cinder v2 的 API
-type CinderV2Client struct {
-	Client *gophercloud.ServiceClient
+type Cinder struct {
+	CinderServiceClient *gophercloud.ServiceClient
+	Version             int // 添加版本信息
 }
 
-// List 实现了 VolumeTypeClient 接口中的 List 方法，用于获取所有卷类型
-func (c *CinderV2Client) List(opts interface{}) ([]interface{}, error) {
-	// 转换为 ListOptsV2 类型
-	listOpts, ok := opts.(volumes.ListOpts)
-	if !ok {
-		return nil, fmt.Errorf("invalid list options")
+func (c *Cinder) Create(opts interface{}) (interface{}, error) {
+	switch c.Version {
+	case 2:
+		if createOpts, ok := opts.(volumesV2.CreateOpts); ok {
+			return volumesV2.Create(c.CinderServiceClient, createOpts).Extract()
+		}
+		return nil, fmt.Errorf("invalid options")
+	case 3:
+		if createOpts, ok := opts.(volumesV3.CreateOpts); ok {
+			return volumesV3.Create(c.CinderServiceClient, createOpts).Extract()
+		}
+		return nil, fmt.Errorf("invalid options")
+	default:
+		return nil, fmt.Errorf("unsupported Cinder version")
 	}
-
-	// 调用 Cinder v2 API 获取卷类型
-	allPages, err := volumes.List(c.Client, listOpts).AllPages()
-	if err != nil {
-		return nil, err
-	}
-
-	allVolumeTypes, err := volumes.ExtractVolumes(allPages)
-	if err != nil {
-		return nil, err
-	}
-
-	var volumeTypes []interface{}
-	for _, vt := range allVolumeTypes {
-		volumeTypes = append(volumeTypes, vt)
-	}
-
-	return volumeTypes, nil
 }
 
-// CinderV3Client 实现了 VolumeTypeClient 接口，用于访问 Cinder v3 的 API
-type CinderV3Client struct {
-	Client *gophercloud.ServiceClient
-}
-
-// List 实现了 VolumeTypeClient 接口中的 List 方法，用于获取所有卷类型
-func (c *CinderV3Client) List(opts interface{}) ([]interface{}, error) {
-	// 转换为 ListOpts 类型
-	listOpts, ok := opts.(volumetypes.ListOpts)
-	if !ok {
-		return nil, fmt.Errorf("invalid list options")
-	}
-
-	// 调用 Cinder v3 API 获取卷类型
-	allPages, err := volumetypes.List(c.Client, listOpts).AllPages()
-	if err != nil {
-		return nil, err
-	}
-
-	allVolumeTypes, err := volumetypes.ExtractVolumeTypes(allPages)
-	if err != nil {
-		return nil, err
-	}
-
-	var volumeTypes []interface{}
-	for _, vt := range allVolumeTypes {
-		volumeTypes = append(volumeTypes, vt)
-	}
-
-	return volumeTypes, nil
-}
-
-// IsCinderV2 返回当前OpenStack环境的Cinder版本是否为v2
-func (os *openStack) IsCinderV2() bool {
-	return os.CinderV2 != nil
-}
-
-// IsCinderV3 返回当前OpenStack环境的Cinder版本是否为v3
-func (os *openStack) IsCinderV3() bool {
-	return os.CinderV3 != nil
-}
-
-// GetVolumeTypes 函数返回指定项目的所有卷类型
-func (os *openStack) GetVolumeTypes(projectID string) ([]interface{}, error) {
-	// 配置 ListOpts
-	listOptsV2 := volumes.ListOpts{
-		AllTenants: true,
-	}
-
-	listOptsV3 := volumetypes.ListOpts{}
-
-	// 根据 Cinder 版本选择客户端
-	var client VolumeClient
-	if os.IsCinderV3() {
-		client = &CinderV3Client{Client: os.CinderV2}
-	} else if os.IsCinderV2() {
-		client = &CinderV2Client{Client: os.CinderV3}
-	} else {
-		return nil, fmt.Errorf("no valid cinder client")
-	}
-
-	// 调用客户端的 List 方法获取所有卷类型
-	allVolumeTypes, err := client.List(listOptsV3)
-	if err != nil {
-		allVolumeTypes, err = client.List(listOptsV2)
+func (c *Cinder) GetVolumeTypes() ([]interface{}, error) {
+	switch c.Version {
+	case 2:
+		listOpts := volumesV2.ListOpts{}
+		// 调用 Cinder v2 API 获取卷类型
+		allPages, err := volumesV2.List(c.CinderServiceClient, listOpts).AllPages()
 		if err != nil {
 			return nil, err
 		}
-	}
 
-	return allVolumeTypes, nil
+		allVolumeTypes, err := volumesV2.ExtractVolumes(allPages)
+		if err != nil {
+			return nil, err
+		}
+		var result []interface{}
+		result = append(result, allVolumeTypes)
+		return result, nil
+	case 3:
+		listOpts := volumetypes.ListOpts{}
+		allPages, err := volumetypes.List(c.CinderServiceClient, listOpts).AllPages()
+		if err != nil {
+			return nil, err
+		}
+
+		allVolumeTypes, err := volumetypes.ExtractVolumeTypes(allPages)
+		if err != nil {
+			return nil, err
+		}
+		var result []interface{}
+		result = append(result, allVolumeTypes)
+		return result, nil
+	default:
+		return nil, fmt.Errorf("unsupported Cinder version")
+	}
 }
 
-func (os *openStack) GetVolumeTypeNames() ([]string, error) {
-	allVolumeTypes, err := os.GetVolumeTypes("")
-	if err != nil {
-		return nil, err
-	}
+// 获取所有 volume 类型的名称
+func (c *Cinder) GetVolumeTypeNames() ([]string, error) {
+	result := make(map[string]struct{}, 10)
 	var volumeTypeNames []string
-	for _, vt := range allVolumeTypes {
-		if vtn, ok := vt.(volumetypes.VolumeType); ok {
-			volumeTypeNames = append(volumeTypeNames, vtn.Name)
-		} else if vtn, ok := vt.(volumes.Volume); ok {
-			volumeTypeNames = append(volumeTypeNames, vtn.Name)
+	switch c.Version {
+	case 2:
+		allVolumeTypes, err := c.GetVolumeTypes()
+		if err != nil {
+			return nil, err
+		}
+		for _, vt := range allVolumeTypes {
+			if vtn, ok := vt.(volumetypes.VolumeType); ok {
+				volumeTypeNames = append(volumeTypeNames, vtn.Name)
+			} else if vtn, ok := vt.(volumesV2.Volume); ok {
+				volumeTypeNames = append(volumeTypeNames, vtn.Name)
+			}
+		}
+		for _, n := range volumeTypeNames {
+			result[n] = struct{}{}
+		}
+		for k := range result {
+			volumeTypeNames = append(volumeTypeNames, k)
 		}
 	}
 	return volumeTypeNames, nil
-}
-
-func CreateVolume(name string, size int, volumeType string) error {
-	return nil
 }

@@ -7,7 +7,7 @@ import (
 )
 
 // GetInstance 函数返回指定 ID 的虚拟机
-func (os *openStack) GetInstance(id string) (*servers.Server, error) {
+func (os *OpenStack) GetInstance(id string) (*servers.Server, error) {
 	// 从 Nova 服务中获取指定 ID 的虚拟机
 	vm, err := servers.Get(os.Nova, id).Extract()
 	if err != nil {
@@ -19,7 +19,7 @@ func (os *openStack) GetInstance(id string) (*servers.Server, error) {
 }
 
 // GetFlavors 函数返回所有属性为 public 的 Flavor
-func (os *openStack) GetFlavors() ([]flavors.Flavor, error) {
+func (os *OpenStack) GetFlavors() ([]flavors.Flavor, error) {
 	listOpts := flavors.ListOpts{
 		AccessType: flavors.PublicAccess,
 	}
@@ -37,7 +37,7 @@ func (os *openStack) GetFlavors() ([]flavors.Flavor, error) {
 }
 
 // GetHypervisors 函数返回所有 Hypervisor
-func (os *openStack) GetHypervisors() ([]hypervisors.Hypervisor, error) {
+func (os *OpenStack) GetHypervisors() ([]hypervisors.Hypervisor, error) {
 	listsOpts := hypervisors.ListOpts{}
 	allPages, err := hypervisors.List(os.Nova, listsOpts).AllPages()
 	if err != nil {
@@ -51,7 +51,7 @@ func (os *openStack) GetHypervisors() ([]hypervisors.Hypervisor, error) {
 }
 
 // GetHypervisorNames 函数返回所有 Hypervisor names
-func (os *openStack) GetHypervisorNames() ([]string, error) {
+func (os *OpenStack) GetHypervisorNames() ([]string, error) {
 	hypervisors, err := os.GetHypervisors()
 	if err != nil {
 		return nil, err
@@ -64,7 +64,7 @@ func (os *openStack) GetHypervisorNames() ([]string, error) {
 }
 
 // CreateInstance 创建 instance
-func (os *openStack) CreateInstance(createOpts servers.CreateOptsBuilder) (*servers.Server, error) {
+func (os *OpenStack) CreateInstance(createOpts servers.CreateOptsBuilder) (*servers.Server, error) {
 	server, err := servers.Create(os.Nova, createOpts).Extract()
 	if err != nil {
 		panic(err)

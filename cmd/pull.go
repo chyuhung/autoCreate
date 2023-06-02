@@ -67,7 +67,7 @@ var pullCmd = &cobra.Command{
 		// 获取 volume type name
 		if ef.volumeTypeFile != "" {
 			log.Info("volumeTypeFile:", ef.volumeTypeFile)
-			volumeTypeNames, err = os.GetVolumeTypeNames()
+			volumeTypeNames, err = os.Cinder.GetVolumeTypeNames()
 			if err != nil {
 				log.Errorln(err)
 			}
