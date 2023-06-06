@@ -1,6 +1,8 @@
 package openstack
 
-import "github.com/gophercloud/gophercloud/openstack/identity/v3/projects"
+import (
+	"github.com/gophercloud/gophercloud/openstack/identity/v3/projects"
+)
 
 // GetProjects 函数返回所有启用的项目列表
 func (os *OpenStack) GetProjects() ([]projects.Project, error) {

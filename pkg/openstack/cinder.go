@@ -20,6 +20,7 @@ type Cinder struct {
 	Version             int // 添加版本信息
 }
 
+// 创建volume
 func (c *Cinder) Create(opts interface{}) (interface{}, error) {
 	switch c.Version {
 	case 2:
@@ -37,11 +38,11 @@ func (c *Cinder) Create(opts interface{}) (interface{}, error) {
 	}
 }
 
+// 获取所有 volume
 func (c *Cinder) GetVolumeTypes() ([]interface{}, error) {
 	switch c.Version {
 	case 2:
 		listOpts := volumesV2.ListOpts{}
-		// 调用 Cinder v2 API 获取卷类型
 		allPages, err := volumesV2.List(c.CinderServiceClient, listOpts).AllPages()
 		if err != nil {
 			return nil, err
