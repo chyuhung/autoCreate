@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"autoCreate/pkg/openstack"
+
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/servers"
 	log "github.com/sirupsen/logrus"
 
@@ -24,16 +26,44 @@ var generateCmd = &cobra.Command{
 		}
 		log.Info("inputFile:", input)
 		log.Info("instanceFile:", ef.instanceFile)
+
 	}}
 
 func GenerateCreateOpts(v vmInfo) (*servers.CreateOpts, error) {
+	myOpenStack, err := openstack.NewOpenStack(conf)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	// image id
+	imageID, err := myOpenStack.GetImageIDByName(v.OsName)
+	if err != nil {
+		log.Println(err)
+	}
+	// flavor id
+	flavorName := v.Cpu + "C" + v.Mem + "G" + v.SysVolSize + "G"
+	flavorID, err := myOpenStack.GetFlavorIDByName(flavorName)
+	if err != nil {
+		log.Println(err)
+	}
+	// networks
+	myNetworks := []servers.Network{}
+	networkID, err := myOpenStack.GetNetworkIDByName(v.VlanName)
+	if err != nil {
+		log.Println(err)
+	}
+	myNetworks = append(myNetworks, servers.Network{UUID: networkID, FixedIP: v.Ipaddr})
+	for vlan, ip := range v.Networks {
+		id, err := myOpenStack.GetNetworkIDByName(vlan)
+		if err != nil {
+			log.Println(err)
+		}
+		myNetworks = append(myNetworks, servers.Network{UUID: id, FixedIP: ip})
+	}
 	return &servers.CreateOpts{
-		Name:      v.Name,
-		ImageRef:  "",
-		FlavorRef: "",
-		//v.Cpu+"C"+v.Mem+"G"+v.SysVolSize+"G"
+		Name:             v.Name,
+		ImageRef:         imageID,
+		FlavorRef:        flavorID,
 		AvailabilityZone: "Nova",
-		Networks:         nil,
-		AccessIPv4:       v.Ipaddr,
+		Networks:         myNetworks,
 	}, nil
 }
