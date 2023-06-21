@@ -25,7 +25,7 @@ var pullCmd = &cobra.Command{
 		if ef.hypervisorFile == "" && ef.imageFile == "" && ef.volumeTypeFile == "" {
 			log.Fatalln("no valid flag")
 		}
-		os, err := openstack.NewOpenStack(conf)
+		myOpenStack, err := openstack.NewOpenStack(conf)
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -37,7 +37,7 @@ var pullCmd = &cobra.Command{
 		if ef.hypervisorFile != "" {
 			log.Info("hypervisorFile:", ef.hypervisorFile)
 
-			hypervisorNames, err = os.GetHypervisorNames()
+			hypervisorNames, err = myOpenStack.GetHypervisorNames()
 			if err != nil {
 				log.Errorln(err)
 			}
@@ -47,13 +47,13 @@ var pullCmd = &cobra.Command{
 			// 获取 image name
 			log.Info("imageFile:", ef.imageFile)
 			// 获取所有 project
-			allProjects, err := os.GetProjects()
+			allProjects, err := myOpenStack.GetProjects()
 			if err != nil {
 				log.Fatalf("failed to get all projects: %v\n", err)
 			}
 			for _, p := range allProjects {
 				if ef.imageFile != "" {
-					images, err := os.GetImages(p.ID)
+					images, err := myOpenStack.GetImages(p.ID)
 					if err != nil {
 						log.Errorln(err)
 					}
@@ -67,7 +67,7 @@ var pullCmd = &cobra.Command{
 		// 获取 volume type name
 		if ef.volumeTypeFile != "" {
 			log.Info("volumeTypeFile:", ef.volumeTypeFile)
-			volumeTypeNames, err = os.Cinder.GetVolumeTypeNames()
+			volumeTypeNames, err = myOpenStack.Cinder.GetVolumeTypeNames()
 			if err != nil {
 				log.Errorln(err)
 			}

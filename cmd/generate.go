@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/gophercloud/gophercloud/openstack/compute/v2/servers"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/spf13/cobra"
@@ -25,24 +26,14 @@ var generateCmd = &cobra.Command{
 		log.Info("instanceFile:", ef.instanceFile)
 	}}
 
-func generateCreateOpts(instanceInfoFromCSV) error {
-	// createOpts := &servers.CreateOptsExt{
-	// 	CreateOptsBuilder: &servers.CreateOpts{
-	// 		Name:      "my-instance",
-	// 		FlavorRef: "yyy",
-	// 	},
-	// 	BootFromVolume: &bootfromvolume.BlockDevice{
-	// 		VolumeID:            "aaa",
-	// 		DeleteOnTermination: true,
-	// 		BootIndex:           0,
-	// 	},
-	// }
-
-	// server, err := servers.Create(client, createOpts).Extract()
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// fmt.Printf("Created server %s\n", server.ID)
-	return nil
+func GenerateCreateOpts(v vmInfo) (*servers.CreateOpts, error) {
+	return &servers.CreateOpts{
+		Name:      v.Name,
+		ImageRef:  "",
+		FlavorRef: "",
+		//v.Cpu+"C"+v.Mem+"G"+v.SysVolSize+"G"
+		AvailabilityZone: "Nova",
+		Networks:         nil,
+		AccessIPv4:       v.Ipaddr,
+	}, nil
 }

@@ -1,6 +1,8 @@
 package openstack
 
 import (
+	"fmt"
+
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/extensions/hypervisors"
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/flavors"
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/servers"
@@ -70,4 +72,28 @@ func (os *OpenStack) CreateInstance(createOpts servers.CreateOptsBuilder) (*serv
 		panic(err)
 	}
 	return server, nil
+}
+
+// 通过flavor name 获取flavor id
+func (os *OpenStack) GetFlavorIDByName(name string) (string, error) {
+	listOpts := flavors.ListOpts{
+		AccessType: flavors.PublicAccess,
+	}
+
+	allPages, err := flavors.ListDetail(os.Nova, listOpts).AllPages()
+	if err != nil {
+		panic(err)
+	}
+
+	allFlavors, err := flavors.ExtractFlavors(allPages)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, flavor := range allFlavors {
+		if flavor.Name == name {
+			return flavor.ID, nil
+		}
+	}
+	return "", fmt.Errorf("no flavor available with the name")
 }

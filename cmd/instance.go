@@ -7,7 +7,7 @@ import (
 )
 
 // 存储从 csv 文件中读入的 instance info 信息
-type instanceInfoFromCSV struct {
+type vmInfo struct {
 	Name        string
 	OsName      string
 	Cpu         string
@@ -20,7 +20,7 @@ type instanceInfoFromCSV struct {
 	Networks map[string]string // eg: vlan 2032:10.191.22.45
 }
 
-func readCsvFile(file string) ([]instanceInfoFromCSV, error) {
+func readCsvFile(file string) ([]vmInfo, error) {
 	f, err := os.Open(file)
 	if err != nil {
 		return nil, err
@@ -32,12 +32,12 @@ func readCsvFile(file string) ([]instanceInfoFromCSV, error) {
 	if err != nil {
 		return nil, err
 	}
-	var instanceInfoArray []instanceInfoFromCSV
+	var vmInfoArray []vmInfo
 	for i, record := range records {
 		if i == 0 {
 			continue // skip header row
 		}
-		var instance instanceInfoFromCSV
+		var instance vmInfo
 		// 11
 		instance.Name = record[11]
 		// 6
@@ -66,12 +66,12 @@ func readCsvFile(file string) ([]instanceInfoFromCSV, error) {
 				//fmt.Println("networks[", j, "]:", networks[j])
 			}
 		}
-		instanceInfoArray = append(instanceInfoArray, instance)
+		vmInfoArray = append(vmInfoArray, instance)
 	}
 
 	// Use the instances
 	// for _, instance := range instances {
 	// 	fmt.Printf("%+v\n", instance)
 	// }
-	return instanceInfoArray, nil
+	return vmInfoArray, nil
 }

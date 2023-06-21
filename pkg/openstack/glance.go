@@ -1,6 +1,8 @@
 package openstack
 
 import (
+	"fmt"
+
 	"github.com/gophercloud/gophercloud/openstack/imageservice/v2/images"
 )
 
@@ -23,4 +25,26 @@ func (os *OpenStack) GetImages(projectID string) ([]images.Image, error) {
 		return nil, err
 	}
 	return allImages, nil
+}
+
+func (os *OpenStack) GetImageIDByName(name string) (string, error) {
+	// 获取所有镜像
+	allPages, err := images.List(os.Glance, images.ListOpts{}).AllPages()
+	if err != nil {
+		return "", err
+	}
+
+	allImages, err := images.ExtractImages(allPages)
+	if err != nil {
+		return "", err
+	}
+
+	// 查找指定名称的镜像
+	for _, image := range allImages {
+		if image.Name == name {
+			return image.ID, nil
+		}
+	}
+
+	return "", fmt.Errorf("no image available with the name")
 }
