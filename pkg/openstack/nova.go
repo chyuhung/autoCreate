@@ -3,6 +3,7 @@ package openstack
 import (
 	"fmt"
 
+	"github.com/gophercloud/gophercloud/openstack/compute/v2/extensions/bootfromvolume"
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/extensions/hypervisors"
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/flavors"
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/servers"
@@ -66,8 +67,8 @@ func (os *OpenStack) GetHypervisorNames() ([]string, error) {
 }
 
 // CreateInstance 创建 instance
-func (os *OpenStack) CreateInstance(createOpts servers.CreateOptsBuilder) (*servers.Server, error) {
-	server, err := servers.Create(os.Nova, createOpts).Extract()
+func (os *OpenStack) CreateInstance(createOpts servers.CreateOpts) (*servers.Server, error) {
+	server, err := bootfromvolume.Create(os.Nova, createOpts).Extract()
 	if err != nil {
 		panic(err)
 	}

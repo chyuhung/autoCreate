@@ -49,6 +49,11 @@ func init() {
 		log.Errorln("You must provide the username, password, project name, user domain name, and auth URL by source environment variables")
 		os.Exit(1)
 	}
+
+	// 默认的存储文件信息
+	ef.imageFile = "env_image_list.txt"
+	ef.hypervisorFile = "env_available_host_list.txt"
+	ef.volumeTypeFile = "env_cinder_volume_type.txt"
 }
 
 func Execute() {

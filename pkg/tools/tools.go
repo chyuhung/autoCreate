@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/sahilm/fuzzy"
 )
 
 // 获取IP的最后一位数
@@ -30,7 +32,7 @@ var r = rand.New(rand.NewSource(time.Now().UnixNano()))
 // 随机获取array下标
 func GetRandIndex(array []string) (int, error) {
 	if len(array) < 1 {
-		return -1, fmt.Errorf("array length error")
+		return -1, fmt.Errorf("no valid elements found")
 	}
 	return r.Intn(len(array)), nil
 }
@@ -72,4 +74,13 @@ func UniqueStrings(s []string) []string {
 		result = append(result, key)
 	}
 	return result
+}
+
+// 模糊匹配， 传入字符串和待匹配切片/数组，返回匹配到的最佳的切片/数组中的字符串和错误
+func FuzzyMatch(input string, options []string) (string, error) {
+	matches := fuzzy.Find(input, options)
+	if len(matches) == 0 {
+		return "", fmt.Errorf("no matching string found")
+	}
+	return matches[0].Str, nil
 }

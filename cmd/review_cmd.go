@@ -5,11 +5,11 @@ import (
 )
 
 func init() {
-	rootCmd.AddCommand(checkCmd)
+	rootCmd.AddCommand(reviewCmd)
 }
 
-var checkCmd = &cobra.Command{
-	Use:   "check",
+var reviewCmd = &cobra.Command{
+	Use:   "review",
 	Short: "Check if all content of the instance is available",
 	Run: func(cmd *cobra.Command, args []string) {
 	}}
