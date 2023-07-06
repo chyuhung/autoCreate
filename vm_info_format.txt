@@ -1,4 +1,4 @@
-,8C32G30G,30,200,it-st-openstack-wlxxaqhxptsdc-zdy01-183.21,vlan 3868,10.191.183.2,,
-,8C32G30G,30,200,it-st-openstack-wlxxaqhxptsdc-zdy02-183.22,vlan 3868,10.191.183.22,,
-,16C32G30G,30,200,it-st-openstack-wlxxaqhxptsdc-zdy03-183.23,vlan 3868,10.191.183.123,compute01,None
-,16C32G30G,30,50,it-st-openstack-wlxxaqhxptsdc-zdy04-183.24,vlan 3868,10.191.183.246,,
+AnolisOS-8.2-QU2-x86_64,8C32G30G,30,200,it-st-openstack-wlxxaqhxptsdc-zdy01-183.21,vlan 3868,10.191.183.2,compute01,None
+AnolisOS-8.2-QU2-x86_64,8C32G30G,30,200,it-st-openstack-wlxxaqhxptsdc-zdy02-183.22,vlan 3868,10.191.183.22,compute01,None
+AnolisOS-8.2-QU2-x86_64,16C32G30G,30,200,it-st-openstack-wlxxaqhxptsdc-zdy03-183.23,vlan 3868,10.191.183.123,compute01,None
+AnolisOS-8.2-QU2-x86_64,16C32G30G,30,50,it-st-openstack-wlxxaqhxptsdc-zdy04-183.24,vlan 3868,10.191.183.246,compute01,None

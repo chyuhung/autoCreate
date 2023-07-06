@@ -1,8 +1,6 @@
 package openstack
 
 import (
-	"fmt"
-
 	"github.com/gophercloud/gophercloud"
 	"github.com/gophercloud/gophercloud/openstack"
 )
@@ -12,7 +10,7 @@ type OpenStack struct {
 	Nova     *gophercloud.ServiceClient
 	Neutron  *gophercloud.ServiceClient
 	Glance   *gophercloud.ServiceClient
-	Cinder   CinderInterface
+	Cinder   *CinderServiceClient
 	Keystone *gophercloud.ServiceClient
 }
 
@@ -41,12 +39,31 @@ func NewOpenStack(conf OpenStackConfig) (*OpenStack, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	cinder, version, err := NewBlockStorageClient(provider, conf.Region)
-	if err != nil {
-		return nil, err
+	// 当前所有版本的Cinder
+	var Cinder *CinderServiceClient
+	cinderv1, errv1 := NewBlockStorageV1Client(provider, conf.Region)
+	cinderv2, errv2 := NewBlockStorageV2Client(provider, conf.Region)
+	cinderv3, errv3 := NewBlockStorageV3Client(provider, conf.Region)
+	if errv1 == nil && errv2 == nil {
+		Cinder = &CinderServiceClient{
+			CinderServiceClientV1: &CinderServiceClientV1{
+				CinderServiceClient: cinderv1,
+				Version:             1},
+			CinderServiceClientV2: &CinderServiceClientV2{
+				CinderServiceClient: cinderv2,
+				Version:             2},
+		}
 	}
-	myCinder := &Cinder{CinderServiceClient: cinder, Version: version}
+	if errv2 == nil && errv3 == nil {
+		Cinder = &CinderServiceClient{
+			CinderServiceClientV3: &CinderServiceClientV3{
+				CinderServiceClient: cinderv3,
+				Version:             3},
+			CinderServiceClientV2: &CinderServiceClientV2{
+				CinderServiceClient: cinderv2,
+				Version:             2},
+		}
+	}
 	keystone, err := NewIdentityClient(provider, conf.Region)
 	if err != nil {
 		return nil, err
@@ -54,7 +71,7 @@ func NewOpenStack(conf OpenStackConfig) (*OpenStack, error) {
 	return &OpenStack{
 		Nova:     nova,
 		Neutron:  neutron,
-		Cinder:   myCinder,
+		Cinder:   Cinder,
 		Glance:   glance,
 		Keystone: keystone,
 	}, nil
@@ -81,6 +98,13 @@ func NewImageClient(provider *gophercloud.ProviderClient, region string) (*gophe
 	})
 }
 
+// NewBlockStorageV1Client 函数返回 BlockStorageV1 客户端
+func NewBlockStorageV1Client(provider *gophercloud.ProviderClient, region string) (*gophercloud.ServiceClient, error) {
+	return openstack.NewBlockStorageV1(provider, gophercloud.EndpointOpts{
+		Region: region,
+	})
+}
+
 // NewBlockStorageV2Client 函数返回 BlockStorageV2 客户端
 func NewBlockStorageV2Client(provider *gophercloud.ProviderClient, region string) (*gophercloud.ServiceClient, error) {
 	return openstack.NewBlockStorageV2(provider, gophercloud.EndpointOpts{
@@ -93,20 +117,6 @@ func NewBlockStorageV3Client(provider *gophercloud.ProviderClient, region string
 	return openstack.NewBlockStorageV3(provider, gophercloud.EndpointOpts{
 		Region: region,
 	})
-}
-
-func NewBlockStorageClient(provider *gophercloud.ProviderClient, region string) (*gophercloud.ServiceClient, int, error) {
-	cinderv2, err := NewBlockStorageV3Client(provider, region)
-	if err == nil {
-		return cinderv2, 2, nil
-	}
-
-	cinderv3, err := NewBlockStorageV2Client(provider, region)
-	if err == nil {
-		return cinderv3, 3, nil
-	}
-	return nil, 0, fmt.Errorf("no available cinder service client")
-
 }
 
 // NewIdentityClient 函数返回 IdentityV3 客户端

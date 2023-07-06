@@ -31,8 +31,11 @@ var r = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 // 随机获取array下标
 func GetRandIndex(array []string) (int, error) {
-	if len(array) < 1 {
+	if len(array) == 0 {
 		return -1, fmt.Errorf("no valid elements found")
+	}
+	if len(array) == 1 {
+		return 0, nil
 	}
 	return r.Intn(len(array)), nil
 }
@@ -54,13 +57,29 @@ func ReadFromEnvFile(filename string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	return strings.Split(string(data), "\n"), nil
+	lines := SplitWithoutEmpty(string(data), '\n')
+	return lines, nil
+}
+func SplitWithoutEmpty(s string, sep rune) []string {
+	parts := strings.FieldsFunc(s, func(c rune) bool {
+		return c == sep
+	})
+	result := make([]string, 0, len(parts))
+	for _, part := range parts {
+		if !strings.ContainsAny(part, string(sep)) {
+			result = append(result, part)
+		}
+	}
+	return result
 }
 
 // 写入数据到文件
 func WriteToEnvFile(array []string, filename string) error {
-	data := strings.Join(array, "\n") + "\n"
-	return os.WriteFile(filename, []byte(data), 0644)
+	if len(array) > 0 {
+		data := strings.Join(array, "\n") + "\n"
+		return os.WriteFile(filename, []byte(data), 0644)
+	}
+	return fmt.Errorf("empty array, do not write")
 }
 
 // 去重 string 数组
@@ -80,7 +99,7 @@ func UniqueStrings(s []string) []string {
 func FuzzyMatch(input string, options []string) (string, error) {
 	matches := fuzzy.Find(input, options)
 	if len(matches) == 0 {
-		return "", fmt.Errorf("no matching string found")
+		return input, fmt.Errorf("no matching string found")
 	}
 	return matches[0].Str, nil
 }

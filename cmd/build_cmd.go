@@ -55,7 +55,7 @@ func GenerateVM(v vmInfo) ([]byte, error) {
 	}
 	imageName, err := tools.FuzzyMatch(v.OsName, imageNames)
 	if err != nil {
-		log.Errorln("No matching image name found.", err)
+		log.Errorln("no matching image name found.", err)
 	}
 	// 从vm信息中构造flavor
 	flavorName := v.Cpu + "C" + v.Mem + "G" + v.SysVolSize + "G"
