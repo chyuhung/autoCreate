@@ -51,11 +51,11 @@ func GenerateVM(v vmInfo) ([]byte, error) {
 	// 从文件中读取最佳匹配的image name
 	imageNames, err := tools.ReadFromEnvFile(ef.imageFile)
 	if err != nil {
-		log.Errorln("no valid image name found.", err)
+		log.Warnln("no valid image name found.", err)
 	}
 	imageName, err := tools.FuzzyMatch(v.OsName, imageNames)
 	if err != nil {
-		log.Errorln("no matching image name found.", err)
+		log.Warnln("no matching image name found.", err)
 	}
 	// 从vm信息中构造flavor
 	flavorName := v.Cpu + "C" + v.Mem + "G" + v.SysVolSize + "G"
@@ -70,24 +70,24 @@ func GenerateVM(v vmInfo) ([]byte, error) {
 	// 获取hypervisor name
 	hypervisors, err := tools.ReadFromEnvFile(ef.hypervisorFile)
 	if err != nil {
-		log.Errorln("no valid hypervisor name found.", err)
+		log.Warnln("no valid hypervisor name found.", err)
 	}
 	num, err := tools.GetRandIndex(hypervisors)
 	if err != nil {
-		log.Errorln("no available hypervisor name found.", err)
+		log.Warnln("no available hypervisor name found.", err)
 	}
 	hypervisorName := hypervisors[num]
 	// 获取卷类型名称
 	volumeTypes, err := tools.ReadFromEnvFile(ef.volumeTypeFile)
 	if err != nil {
-		log.Errorln("no valid volume type found,", err)
+		log.Warnln("no valid volume type found,", err)
 	}
 	randNum, err := tools.GetRandIndex(volumeTypes)
 	if err != nil {
-		log.Errorln("no available volume type name found.", err)
+		log.Warnln("no available volume type name found.", err)
 	}
 	volumeType := "None"
-	if randNum > 0 {
+	if randNum > -1 {
 		volumeType = volumeTypes[randNum]
 	}
 	// CSV文件格式

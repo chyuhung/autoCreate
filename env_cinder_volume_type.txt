@@ -1,2 +1,0 @@
-test-is-public
-__DEFAULT__

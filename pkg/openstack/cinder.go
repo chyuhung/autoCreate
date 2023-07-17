@@ -78,6 +78,7 @@ func (c *CinderServiceClient) GetVolumeTypeNames() ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
+	//log.Println(allVolumeTypes...)
 	if allVolumeTypes == nil {
 		return nil, fmt.Errorf("failed to get volume types")
 	}
