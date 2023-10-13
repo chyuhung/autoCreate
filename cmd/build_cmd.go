@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"autoCreate/pkg/tools"
+	"autoCreate/utils"
 
 	log "github.com/sirupsen/logrus"
 
@@ -43,17 +43,17 @@ var buildCmd = &cobra.Command{
 			formattedVMArray = append(formattedVMArray, string(line))
 		}
 		log.Infoln("Writing information to file ...")
-		tools.WriteToEnvFile(formattedVMArray, ef.instanceFile)
+		utils.WriteToEnvFile(formattedVMArray, ef.instanceFile)
 
 	}}
 
 func GenerateVM(v vmInfo) ([]byte, error) {
 	// 从文件中读取最佳匹配的image name
-	imageNames, err := tools.ReadFromEnvFile(ef.imageFile)
+	imageNames, err := utils.ReadFromEnvFile(ef.imageFile)
 	if err != nil {
 		log.Warnln("no valid image name found.", err)
 	}
-	imageName, err := tools.FuzzyMatch(v.OsName, imageNames)
+	imageName, err := utils.FuzzyMatch(v.OsName, imageNames)
 	if err != nil {
 		log.Warnln("no matching image name found.", err)
 	}
@@ -68,21 +68,21 @@ func GenerateVM(v vmInfo) ([]byte, error) {
 		networks = append(networks, k+","+v)
 	}
 	// 获取hypervisor name
-	hypervisors, err := tools.ReadFromEnvFile(ef.hypervisorFile)
+	hypervisors, err := utils.ReadFromEnvFile(ef.hypervisorFile)
 	if err != nil {
 		log.Warnln("no valid hypervisor name found.", err)
 	}
-	num, err := tools.GetRandIndex(hypervisors)
+	num, err := utils.GetRandIndex(hypervisors)
 	if err != nil {
 		log.Warnln("no available hypervisor name found.", err)
 	}
 	hypervisorName := hypervisors[num]
 	// 获取卷类型名称
-	volumeTypes, err := tools.ReadFromEnvFile(ef.volumeTypeFile)
+	volumeTypes, err := utils.ReadFromEnvFile(ef.volumeTypeFile)
 	if err != nil {
 		log.Warnln("no valid volume type found,", err)
 	}
-	randNum, err := tools.GetRandIndex(volumeTypes)
+	randNum, err := utils.GetRandIndex(volumeTypes)
 	if err != nil {
 		log.Warnln("no available volume type name found.", err)
 	}

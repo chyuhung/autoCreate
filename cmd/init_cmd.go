@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"autoCreate/pkg/openstack"
-	"autoCreate/pkg/tools"
+	"autoCreate/openstack"
+	"autoCreate/utils"
 
 	log "github.com/sirupsen/logrus"
 
@@ -36,7 +36,7 @@ var initCmd = &cobra.Command{
 		if err != nil {
 			log.Errorln(err)
 		}
-		tools.WriteToEnvFile(tools.UniqueStrings(hypervisorNames), ef.hypervisorFile)
+		utils.WriteToEnvFile(utils.UniqueStrings(hypervisorNames), ef.hypervisorFile)
 		log.Info("hypervisorFile:", ef.hypervisorFile)
 
 		// 获取 image name
@@ -55,7 +55,7 @@ var initCmd = &cobra.Command{
 				for _, i := range images {
 					imageNames = append(imageNames, i.Name)
 				}
-				tools.WriteToEnvFile(tools.UniqueStrings(imageNames), ef.imageFile)
+				utils.WriteToEnvFile(utils.UniqueStrings(imageNames), ef.imageFile)
 			}
 		}
 		log.Info("imageFile:", ef.imageFile)
@@ -66,7 +66,7 @@ var initCmd = &cobra.Command{
 		if err != nil {
 			log.Errorln(err)
 		}
-		tools.WriteToEnvFile(tools.UniqueStrings(volumeTypeNames), ef.volumeTypeFile)
+		utils.WriteToEnvFile(utils.UniqueStrings(volumeTypeNames), ef.volumeTypeFile)
 		log.Info("volumeTypeFile:", ef.volumeTypeFile)
 	},
 }

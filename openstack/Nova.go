@@ -9,6 +9,27 @@ import (
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/servers"
 )
 
+// GetInstances 函数返回指定分页的虚拟机列表
+func (os *OpenStack) GetInstances(pageSize int, marker string) ([]servers.Server, error) {
+	var instances []servers.Server
+	listOpts := servers.ListOpts{
+		AllTenants: true,
+		Limit:      pageSize,
+		Marker:     marker, // 设置起始位置为空字符串
+	}
+
+	allPages, err := servers.List(os.Nova, listOpts).AllPages()
+	if err != nil {
+		return instances, nil
+	}
+	allInstances, err := servers.ExtractServers(allPages)
+	if err != nil {
+		return instances, nil
+	}
+	instances = append(instances, allInstances...)
+	return instances, nil
+}
+
 // GetInstance 函数返回指定 ID 的虚拟机
 func (os *OpenStack) GetInstance(id string) (*servers.Server, error) {
 	// 从 Nova 服务中获取指定 ID 的虚拟机

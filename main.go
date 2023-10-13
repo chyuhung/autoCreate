@@ -1,9 +1,13 @@
 package main
 
-import (
-	"autoCreate/cmd"
-)
+import "autoCreate/routes"
 
+// web
 func main() {
-	cmd.Execute()
+	routes.InitRouter()
 }
+
+// 命令行
+// func main() {
+// 	cmd.Execute()
+// }

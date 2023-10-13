@@ -3,13 +3,13 @@ package openstack
 import "github.com/gophercloud/gophercloud"
 
 type OpenStackConfig struct {
-	Username    string
-	Password    string
-	ProjectName string
-	DomainName  string
+	Username    string `json:"username"`
+	Password    string `json:"password"`
+	ProjectName string `json:"project_name"`
+	DomainName  string `json:"domain_name"`
 
-	AuthURL string
-	Region  string
+	AuthURL string `json:"auth_url"`
+	Region  string `json:"region"  default:"ReginOne"`
 }
 
 // AuthOpts gets openstack auth options

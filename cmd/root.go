@@ -3,7 +3,7 @@ package cmd
 import (
 	"os"
 
-	"autoCreate/pkg/openstack"
+	"autoCreate/openstack"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
