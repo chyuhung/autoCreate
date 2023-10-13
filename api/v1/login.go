@@ -9,23 +9,24 @@ import (
 )
 
 func LoginHandler(c *gin.Context) {
-	// user conf
 	var conf openstack.OpenStackConfig
 	err := c.ShouldBindJSON(&conf)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status":  errmsg.ERROR,
-			"message": err,
+		c.JSON(http.StatusOK, gin.H{
+			"status": errmsg.ERROR,
+			"data":   errmsg.JSON_ERROR,
 		})
+		return
 	}
 	token := generateToken()
 	c.JSON(http.StatusOK, gin.H{
 		"status": errmsg.SUCCSE,
-		"data":   token,
+		"token":  token,
+		"data":   conf,
 	})
 }
 
 // 获取token
 func generateToken() string {
-	return "test success"
+	return "Login successful."
 }
