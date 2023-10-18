@@ -1,7 +1,8 @@
 package v1
 
 import (
-	"autoCreate/openstack"
+	"autoCreate/middleware"
+	"autoCreate/model"
 	"autoCreate/utils/errmsg"
 	"net/http"
 
@@ -9,24 +10,17 @@ import (
 )
 
 func LoginHandler(c *gin.Context) {
-	var conf openstack.OpenStackConfig
-	err := c.ShouldBindJSON(&conf)
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"status": errmsg.ERROR,
-			"data":   errmsg.JSON_ERROR,
-		})
-		return
-	}
-	token := generateToken()
-	c.JSON(http.StatusOK, gin.H{
-		"status": errmsg.SUCCSE,
-		"token":  token,
-		"data":   conf,
-	})
-}
+	var data model.User
+	var token string
+	c.ShouldBindJSON(&data)
 
-// 获取token
-func generateToken() string {
-	return "Login successful."
+	code := model.CheckLogin(data.Username, data.Password)
+	if code == errmsg.SUCCSE {
+		token, code = middleware.SetToken(data.Username)
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":  code,
+		"message": errmsg.GetErrMsg(code),
+		"token":   token,
+	})
 }
