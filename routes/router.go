@@ -13,6 +13,10 @@ func InitRouter() {
 	{
 		// 登录模块
 		auth.POST("/login", v1.LoginHandler)
+
+		// 创建虚拟机
+		auth.POST("/addVm", v1.AddVm)
+
 	}
 	r.Run(utils.HttpPort)
 }
