@@ -87,7 +87,7 @@ func (c *CinderServiceClient) GetVolumeTypeNames() ([]string, error) {
 		case volumetypesv1.VolumeType:
 			v, ok := vt.(volumetypesv1.VolumeType)
 			if !ok {
-				fmt.Printf("Error: unable to convert %v to volumesV2.Volume\n", vt)
+				fmt.Printf("Error: unable to convert %v to volumesV1.Volume\n", vt)
 				continue
 			}
 			volumeTypeNames = append(volumeTypeNames, v.Name)
@@ -98,14 +98,39 @@ func (c *CinderServiceClient) GetVolumeTypeNames() ([]string, error) {
 				continue
 			}
 			volumeTypeNames = append(volumeTypeNames, v.Name)
-		default:
-			fmt.Printf("Error: unknown volume type %v\n", vt)
 		}
 	}
 	return volumeTypeNames, nil
 }
 
-func (os *OpenStack) GetVolumeTypeId(string) (string, error) {
+func (os *OpenStack) GetVolumeTypeId(name string) (string, error) {
+	var id string
+	allVolumeTyps, err := os.Cinder.GetVolumeTypes()
+	if err != nil {
+		return "", err
+	}
+	for _, v := range allVolumeTyps {
+		switch v := v.(type) {
+		case volumetypesv1.VolumeType:
+			if v.Name == name {
+				return v.ID, nil
+			}
+			if v.Name == "__Default__" {
+				id = v.ID
+			}
+		case volumetypesv3.VolumeType:
+			if v.Name == name {
+				return v.ID, nil
+			}
+			if v.Name == "__Default__" {
+				id = v.ID
+			}
+		}
+	}
+	// 默认值
+	if name == "" {
+		return id, nil
+	}
 	return "", fmt.Errorf("")
 }
 
@@ -161,13 +186,14 @@ func (os *OpenStack) CreateVolumes(map[string]int, string) ([]string, error) {
 // // 获取所有 volume types
 // func (c *CinderServiceClientV2) GetVolumeTypes() ([]interface{}, error) {
 // 	switch c.Version {
+// 	case 1:
 // 	case 2:
-// 		listOpts := volumesV2.ListOpts{AllTenants: true}
-// 		allPages, err := volumesV2.List(c.CinderServiceClient, listOpts).AllPages()
+// 		listOpts := volumes.ListOpts{AllTenants: true}
+// 		allPages, err := volumes.List(c.CinderServiceClient, listOpts).AllPages()
 // 		if err != nil {
 // 			return nil, err
 // 		}
-// 		allVolumeTypes, err := volumesV2.ExtractVolumes(allPages)
+// 		allVolumeTypes, err := volumes.ExtractVolumes(allPages)
 // 		if err != nil {
 // 			return nil, err
 // 		}
@@ -192,9 +218,8 @@ func (os *OpenStack) CreateVolumes(map[string]int, string) ([]string, error) {
 // 			result = append(result, vt)
 // 		}
 // 		return result, nil
-// 	default:
-// 		return nil, fmt.Errorf("unsupported Cinder version")
 // 	}
+// 	return nil, fmt.Errorf("unsupported Cinder version")
 // }
 
 // // 获取所有 volume 类型的名称

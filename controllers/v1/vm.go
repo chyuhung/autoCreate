@@ -5,6 +5,7 @@ import (
 	"autoCreate/openstack"
 	"autoCreate/utils"
 	"autoCreate/utils/errmsg"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -27,6 +28,7 @@ func CreateVm(c *gin.Context) {
 		AuthURL:     utils.AuthURL,
 		Region:      utils.Region,
 	}
+	log.Println("Openstack配置信息:", conf)
 	var client *openstack.OpenStack
 	// 创建 OpenStack 客户端
 	client, err := openstack.NewOpenStack(conf)
@@ -38,7 +40,7 @@ func CreateVm(c *gin.Context) {
 	// 获取镜像 ID
 	imageID, err := client.GetImageId(request.ImageName)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get image ID"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
 
