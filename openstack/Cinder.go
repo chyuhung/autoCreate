@@ -105,6 +105,14 @@ func (c *CinderServiceClient) GetVolumeTypeNames() ([]string, error) {
 	return volumeTypeNames, nil
 }
 
+func (os *OpenStack) GetVolumeTypeId(string) (string, error) {
+	return "", fmt.Errorf("")
+}
+
+func (os *OpenStack) CreateVolumes(map[string]int, string) ([]string, error) {
+	return []string{}, fmt.Errorf("")
+}
+
 // 创建volume
 // func (c *Cinder) Create() ( error) {
 // 	bootfromvolume.CreateOptsExt{}

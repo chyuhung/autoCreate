@@ -37,7 +37,7 @@ func loadServer(file *ini.File) {
 	Password = sectionOpenstack.Key("OS_PASSWORD").MustString("")
 	ProjectName = sectionOpenstack.Key("OS_PROJECT_NAME").MustString("admin")
 	DomainName = sectionOpenstack.Key("OS_USER_DOMAIN_NAME").MustString("Default")
-	Region = sectionOpenstack.Key("OS_REGION_NAME").MustString("DefaultRegion")
+	Region = sectionOpenstack.Key("OS_REGION_NAME").MustString("RegionOne")
 	AuthURL = sectionOpenstack.Key("OS_AUTH_URL").MustString("")
 
 	if Username == "" || Password == "" || ProjectName == "" || DomainName == "" || AuthURL == "" {

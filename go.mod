@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/gin-gonic/gin v1.9.1
-	github.com/gophercloud/gophercloud v1.6.0
+	github.com/gophercloud/gophercloud v1.7.0
 	github.com/spf13/cobra v1.7.0
 	gopkg.in/ini.v1 v1.67.0
 )

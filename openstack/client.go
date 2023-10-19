@@ -1,6 +1,8 @@
 package openstack
 
 import (
+	"log"
+
 	"github.com/gophercloud/gophercloud"
 	"github.com/gophercloud/gophercloud/openstack"
 )
@@ -16,10 +18,12 @@ type OpenStack struct {
 
 // NewOpenStack 函数初始化 OpenStack 结构体
 func NewOpenStack(conf OpenStackConfig) (*OpenStack, error) {
+	log.Println(conf)
 	provider, err := openstack.NewClient(conf.AuthURL)
 	if err != nil {
 		return nil, err
 	}
+
 	err = openstack.Authenticate(provider, conf.AuthOpts())
 	if err != nil {
 		return nil, err

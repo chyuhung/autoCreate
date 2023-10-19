@@ -27,7 +27,7 @@ func (os *OpenStack) GetImages(projectID string) ([]images.Image, error) {
 	return allImages, nil
 }
 
-func (os *OpenStack) GetImageIDByName(name string) (string, error) {
+func (os *OpenStack) GetImageId(name string) (string, error) {
 	// 获取所有镜像
 	allPages, err := images.List(os.Glance, images.ListOpts{}).AllPages()
 	if err != nil {

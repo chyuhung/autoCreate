@@ -1,6 +1,15 @@
 package openstack
 
-import "github.com/gophercloud/gophercloud/openstack/networking/v2/networks"
+import (
+	"fmt"
+
+	"github.com/gophercloud/gophercloud/openstack/networking/v2/networks"
+)
+
+// Get network ids
+func (os *OpenStack) GetNetworkIds(map[string]string) ([]string, error) {
+	return []string{}, fmt.Errorf("")
+}
 
 // Get Networks
 func (os *OpenStack) GetNetworks() ([]networks.Network, error) {

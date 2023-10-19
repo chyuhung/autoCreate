@@ -1,7 +1,7 @@
 package routes
 
 import (
-	v1 "autoCreate/api/v1"
+	v1 "autoCreate/controllers/v1"
 	"autoCreate/utils"
 
 	"github.com/gin-gonic/gin"
@@ -15,7 +15,7 @@ func InitRouter() {
 		auth.POST("/login", v1.LoginHandler)
 
 		// 创建虚拟机
-		auth.POST("/addVm", v1.AddVm)
+		auth.POST("/createVm", v1.CreateVm)
 
 	}
 	r.Run(utils.HttpPort)

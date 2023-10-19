@@ -9,6 +9,11 @@ import (
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/servers"
 )
 
+// attach volume to instance
+func (os *OpenStack) AttachVolume(*servers.Server, string) error {
+	return fmt.Errorf("")
+}
+
 // GetInstances 函数返回指定分页的虚拟机列表
 func (os *OpenStack) GetInstances(pageSize int, marker string) ([]servers.Server, error) {
 	var instances []servers.Server

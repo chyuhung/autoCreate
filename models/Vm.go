@@ -1,4 +1,4 @@
-package model
+package models
 
 import (
 	"autoCreate/utils/errmsg"
@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type Vm struct {
+type VmRequest struct {
 	gorm.Model
 	ImageName      string            `label:"镜像名称" json:"image_name"`
 	FlavorName     string            `label:"规格名称" json:"flavor_name"`
@@ -18,7 +18,7 @@ type Vm struct {
 	VolumeTypeName string            `label:"卷类型名称" json:"volume_type_name"`
 }
 
-func CreateVm(data *Vm) int {
+func CreateVm(data *VmRequest) int {
 	// 创建卷
 	// 创建虚拟机
 	return errmsg.SUCCSE

@@ -2,7 +2,7 @@ package v1
 
 import (
 	"autoCreate/middleware"
-	"autoCreate/model"
+	"autoCreate/models"
 	"autoCreate/utils/errmsg"
 	"net/http"
 
@@ -10,11 +10,11 @@ import (
 )
 
 func LoginHandler(c *gin.Context) {
-	var data model.User
+	var data models.User
 	var token string
 	c.ShouldBindJSON(&data)
 
-	code := model.CheckLogin(data.Username, data.Password)
+	code := models.CheckLogin(data.Username, data.Password)
 	if code == errmsg.SUCCSE {
 		token, code = middleware.SetToken(data.Username)
 	}
