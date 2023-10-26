@@ -12,7 +12,9 @@ import (
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/servers"
 )
 
+// 创建虚拟机
 func CreateVm(c *gin.Context) {
+	// 获取请求参数
 	var request models.VmRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": errmsg.JSON_ERROR})
@@ -47,14 +49,14 @@ func CreateVm(c *gin.Context) {
 	// 获取云硬盘类型 ID
 	volumeTypeID, err := client.GetVolumeTypeId(request.VolumeTypeName)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get volume type ID"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get volume type Id"})
 		return
 	}
 
-	// 获取网络 ID
-	networkIDs, err := client.GetNetworkIds(request.Networks)
+	// 获取网络
+	networks, err := client.BuildNetworks(request.Networks)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get network IDs"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get network Ids"})
 		return
 	}
 
@@ -67,10 +69,13 @@ func CreateVm(c *gin.Context) {
 
 	// 创建虚拟机
 	createOpts := servers.CreateOpts{
-		Name:      request.VmName,
+		// server name
+		Name: request.VmName,
+		// flavor id
 		FlavorRef: request.FlavorName,
-		ImageRef:  imageID,
-		Networks:  networkIDs,
+		// image id
+		ImageRef: imageID,
+		Networks: networks,
 	}
 
 	server, err := client.CreateInstance(createOpts)

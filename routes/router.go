@@ -1,3 +1,4 @@
+// Initialize router
 package routes
 
 import (

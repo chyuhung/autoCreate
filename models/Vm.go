@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// 定义一个VmRequest结构体
 type VmRequest struct {
 	gorm.Model
 	ImageName      string            `label:"镜像名称" json:"image_name"`
@@ -18,12 +19,14 @@ type VmRequest struct {
 	VolumeTypeName string            `label:"卷类型名称" json:"volume_type_name"`
 }
 
+// 创建虚拟机
 func CreateVm(data *VmRequest) int {
 	// 创建卷
 	// 创建虚拟机
 	return errmsg.SUCCSE
 }
 
+// 创建卷
 func createVol(volumeName string, volumeSize int, volumeType string) error {
 	return fmt.Errorf("test")
 }

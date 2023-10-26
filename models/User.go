@@ -11,6 +11,7 @@ type User struct {
 }
 
 func CheckLogin(username string, password string) int {
+	// 检查用户名和密码是否正确
 	return 0
 
 }
