@@ -6,6 +6,5 @@ import (
 )
 
 func main() {
-	// Call the InitRouter function from the routes package
 	routes.InitRouter()
 }

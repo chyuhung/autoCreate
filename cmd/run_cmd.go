@@ -1,18 +1,18 @@
 package cmd
 
-import (
-	"github.com/spf13/cobra"
-)
+// import (
+// 	"github.com/spf13/cobra"
+// )
 
-func init() {
-	rootCmd.AddCommand(run_Cmd)
-}
+// func init() {
+// 	rootCmd.AddCommand(run_Cmd)
+// }
 
-var run_Cmd = &cobra.Command{
-	Use:   "run",
-	Short: "Start to create instance based on the specified content file",
-	Run: func(cmd *cobra.Command, args []string) {
-	}}
+// var run_Cmd = &cobra.Command{
+// 	Use:   "run",
+// 	Short: "Start to create instance based on the specified content file",
+// 	Run: func(cmd *cobra.Command, args []string) {
+// 	}}
 
 // func createVM(v vmInfo) error {
 // 	myOpenStack, err := openstack.NewOpenStack(conf)

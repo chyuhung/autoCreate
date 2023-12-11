@@ -7,10 +7,10 @@ import (
 
 // OpenStack 结构体包含各个服务的客户端
 type OpenStack struct {
-	Nova     *gophercloud.ServiceClient
-	Neutron  *gophercloud.ServiceClient
-	Glance   *gophercloud.ServiceClient
-	Cinder   *CinderServiceClient
+	Nova    *gophercloud.ServiceClient
+	Neutron *gophercloud.ServiceClient
+	Glance  *gophercloud.ServiceClient
+	//Cinder   *CinderServiceClient
 	Keystone *gophercloud.ServiceClient
 }
 
@@ -41,38 +41,38 @@ func NewOpenStack(conf OpenStackConfig) (*OpenStack, error) {
 		return nil, err
 	}
 	// 当前所有版本的Cinder
-	var Cinder *CinderServiceClient
-	cinderv1, errv1 := NewBlockStorageV1Client(provider, conf.Region)
-	cinderv2, errv2 := NewBlockStorageV2Client(provider, conf.Region)
-	cinderv3, errv3 := NewBlockStorageV3Client(provider, conf.Region)
-	if errv1 == nil && errv2 == nil {
-		Cinder = &CinderServiceClient{
-			CinderServiceClientV1: &CinderServiceClientV1{
-				CinderServiceClient: cinderv1,
-				Version:             1},
-			CinderServiceClientV2: &CinderServiceClientV2{
-				CinderServiceClient: cinderv2,
-				Version:             2},
-		}
-	}
-	if errv2 == nil && errv3 == nil {
-		Cinder = &CinderServiceClient{
-			CinderServiceClientV3: &CinderServiceClientV3{
-				CinderServiceClient: cinderv3,
-				Version:             3},
-			CinderServiceClientV2: &CinderServiceClientV2{
-				CinderServiceClient: cinderv2,
-				Version:             2},
-		}
-	}
+	// var Cinder *CinderServiceClient
+	// cinderv1, errv1 := NewBlockStorageV1Client(provider, conf.Region)
+	// cinderv2, errv2 := NewBlockStorageV2Client(provider, conf.Region)
+	// cinderv3, errv3 := NewBlockStorageV3Client(provider, conf.Region)
+	// if errv1 == nil && errv2 == nil {
+	// 	Cinder = &CinderServiceClient{
+	// 		CinderServiceClientV1: &CinderServiceClientV1{
+	// 			CinderServiceClient: cinderv1,
+	// 			Version:             1},
+	// 		CinderServiceClientV2: &CinderServiceClientV2{
+	// 			CinderServiceClient: cinderv2,
+	// 			Version:             2},
+	// 	}
+	// }
+	// if errv2 == nil && errv3 == nil {
+	// 	Cinder = &CinderServiceClient{
+	// 		CinderServiceClientV3: &CinderServiceClientV3{
+	// 			CinderServiceClient: cinderv3,
+	// 			Version:             3},
+	// 		CinderServiceClientV2: &CinderServiceClientV2{
+	// 			CinderServiceClient: cinderv2,
+	// 			Version:             2},
+	// 	}
+	// }
 	keystone, err := NewIdentityClient(provider, conf.Region)
 	if err != nil {
 		return nil, err
 	}
 	return &OpenStack{
-		Nova:     nova,
-		Neutron:  neutron,
-		Cinder:   Cinder,
+		Nova:    nova,
+		Neutron: neutron,
+		//Cinder:   Cinder,
 		Glance:   glance,
 		Keystone: keystone,
 	}, nil
